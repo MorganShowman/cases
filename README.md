@@ -88,8 +88,8 @@ end
 > test_case.test_without_block
  => "success message from cased object"
 > test_case.test_caseable do |on|
-    on.success? { |response| "#{response.success_message} through caseable"
-    on.failed? { |response| "#{response.failed_message} through caseable"
+    on.success? { |response| "#{response.success_message} through caseable" }
+    on.failed? { |response| "#{response.failed_message} through caseable" }
   end
  => "success message from test response through caseable"
 >
@@ -101,8 +101,8 @@ end
 > test_case.test_without_block
  => "failed message from cased object"
 > test_case.test_caseable do |on|
-    on.success? { |response| "#{response.success_message} through caseable"
-    on.failed? { |response| "#{response.failed_message} through caseable"
+    on.success? { |response| "#{response.success_message} through caseable" }
+    on.failed? { |response| "#{response.failed_message} through caseable" }
   end
  => "failed message from test response through caseable"
 ```

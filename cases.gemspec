@@ -7,11 +7,11 @@ Gem::Specification.new do |spec|
   spec.name          = "cases"
   spec.version       = Cases::VERSION
   spec.authors       = ["Morgan Showman"]
-  spec.email         = ["mshowman@squaremouth.com"]
+  spec.email         = ["morganshowman@gmail.com"]
   spec.summary       = %q{Define cases on methods that execute different callbacks for different scenarios}
   spec.description   = %q{Define case, and caseable callbacks for your methods in ruby. By defining cases you can add callbacks
                           to your methods where different callbacks will happen based on the result of the method}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/MorganShowman/cases"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")

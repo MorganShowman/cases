@@ -1,27 +1,26 @@
-class Caseable
-  attr_reader :object
+module Cases
+  class Caseable
+    attr_reader :object, :runtime_block
 
-  def self.execute(result, &block)
-    new(result).execute(result, &block)
-  end
+    def initialize(object, &runtime_block)
+      @object = object
+      @runtime_block = runtime_block
+    end
 
-  def initialize(object)
-    @object = object
-  end
+    def execute
+      runtime_block.call(self)
+      case_blocks.reduce(object) { |result, case_block| case_block.call(result) }
+    end
 
-  def execute(original_result, &block)
-    block.call(self)
-    case_blocks.reduce(original_result) { |result, case_block| case_block.call(result) }
-  end
+    def method_missing(method, &case_block)
+      case_blocks << case_block if object.send(method)
+      case_blocks
+    end
 
-  def method_missing(method, &block)
-    case_blocks << block if object.send(method)
-    case_blocks
-  end
+    private
 
-  private
-
-  def case_blocks
-    @_case_blocks ||= []
+    def case_blocks
+      @_case_blocks ||= []
+    end
   end
 end

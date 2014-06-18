@@ -1,17 +1,17 @@
 module Cases
   class Case
     attr_accessor :result
-    attr_reader :method, :event, :options, :block
+    attr_reader :method, :event, :options, :action_block
 
     def self.all
       @_all ||= {}
     end
 
-    def initialize(method, event, options = {}, &block)
+    def initialize(method, event, options = {}, &action_block)
       @method = method
       @event = event
-      @block = block
       @options = options
+      @action_block = action_block
 
       register
     end
@@ -24,7 +24,7 @@ module Cases
     def execute(object, result)
       return if !result.send(event)
 
-      self.result = block.call(options[:on_self] ? object : result)
+      self.result = action_block.call(options[:on_self] ? object : result)
     end
 
     private

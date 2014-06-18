@@ -10,38 +10,34 @@ module Cases
   end
 
   module ClassMethods
-    def define_case(method, cases)
-      if block_given?
-        define_case_with_block(method, cases, &Proc.new)
-      else
-        cases.each_pair do |event, action|
-          Case.new(method, event, { on_self: true }, &Proc.new { |object| object.send(action) })
-        end
-      end
+    def define_case(method, kase)
+      block_given? ? __cases_define_with_block(method, kase, &Proc.new) : __cases_define_without_block(method, kase)
 
-      define_execute_cases(method)
+      __cases_define_execute_cases(method)
     end
 
     def define_caseable(method)
-      proxy_result(method) { |result, &block| Caseable.execute(result, &block) }
-    end
-
-    def cases
-      Case.all
+      proxy_result(method) { |result, &runtime_block| Cases::Caseable.new(result, &runtime_block).execute }
     end
 
     private
 
-    def define_case_with_block(method, event, &block)
-      Case.new(method, event, &block)
+    def __cases_define_with_block(method, *events, &action_block)
+      events.each { |event| Cases::Case.new(method, event, &action_block) }
     end
 
-    def define_execute_cases(method)
-      define_method "execute_#{method}_cases" do |&block|
-        self.class.cases[method].find { |kase| kase.execute(self, block.call) }.result
+    def __cases_define_without_block(method, kase)
+      kase.each_pair do |event, action|
+        Cases::Case.new(method, event, { on_self: true }, &Proc.new { |object| object.send(action) })
+      end
+    end
+
+    def __cases_define_execute_cases(method)
+      define_method "__cases_execute_#{method}_cases" do |&block|
+        Cases::Case.all[method].find { |kase| kase.execute(self, block.call) }.result
       end
 
-      around_method(method, "execute_#{method}_cases")
+      around_method(method, "__cases_execute_#{method}_cases")
     end
   end
 end
